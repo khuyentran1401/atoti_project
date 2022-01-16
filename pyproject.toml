@@ -1,0 +1,68 @@
+[tool.poetry]
+name = "app"
+version = "0.1.0"
+description = ""
+authors = []
+
+[tool.poetry.dependencies]
+atoti = {extras = ["sql"], version = "*"}
+# Poetry deletes this package when the --no-dev flag is enabled because it is a dependency of requests, however it is needed for package installation.
+certifi = "*"
+numpy = "*"
+pandas = "*"
+pydantic = "*"
+# Cannot use pinned version as it leads to NoCompatiblePythonVersionFound error when doing a fresh install.
+python = "^3.9"
+requests = "*"
+
+[tool.poetry.dev-dependencies]
+black = "*"
+docker = "*"
+isort = "*"
+mypy = "*"
+pandas-stubs = "*"
+pylint = "*"
+pytest = "*"
+types-requests = "*"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.isort]
+profile = "black"
+combine_as_imports = "True"
+
+[tool.mypy]
+strict = true
+
+[[tool.mypy.overrides]]
+module = "tests.*"
+disallow_untyped_calls = false
+
+[[tool.mypy.overrides]]
+module = ["docker", "docker.*"]
+ignore_missing_imports = true
+
+[tool.pylint."messages control"]
+ignore = [".venv"]
+disable = [
+  # Handled by Black.
+  "line-too-long",
+  # <----------------------
+  # Do not force docstrings
+  "missing-class-docstring",
+  "missing-function-docstring",
+  "missing-module-docstring",
+  # Do not force docstrings
+  # ----------------------->
+  # Handled by mypy.
+  "no-name-in-module",
+  # So that code such as `m["Boolean"] == True` can be used.
+  "singleton-comparison",
+  # Useless.
+  "too-few-public-methods",
+  # Goes against https://www.python.org/dev/peps/pep-0484/#stub-files.
+  "useless-import-alias",
+]
+good-names = ["at", "h", "l", "m"]
